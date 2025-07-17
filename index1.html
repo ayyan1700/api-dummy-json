@@ -1,0 +1,117 @@
+
+<style>
+    body {
+        margin: 0;
+        padding: 0;
+        font-family: Arial, sans-serif;
+        background-color: #fffaf0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        overflow-y: scroll;
+    }
+
+    #back-to-main-page {
+        margin: 20px;
+        padding: 10px 20px;
+        background-color: #f4a261;
+        border: none;
+        border-radius: 6px;
+        color: white;
+        font-weight: bold;
+        cursor: pointer;
+        box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.2);
+        transition: background-color 0.3s ease;
+    }
+
+    #back-to-main-page:hover {
+        background-color: #e76f51;
+    }
+
+    .container {
+        background-color: #fff;
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0px 1px 10px black;
+        width: 90%;
+        max-width: 500px;
+        text-align: center;
+    }
+
+    #img {
+        width: 100%;
+        max-width: 400px;
+        height: auto;
+        border-radius: 10px;
+        box-shadow: 0px 1px 10px black;
+    }
+
+    h2 {
+        margin-top: 15px;
+        font-size: 28px;
+        color: #333;
+    }
+
+    p {
+        margin: 10px 0;
+        font-size: 16px;
+        color: #555;
+    }
+
+    ul {
+        list-style-type: disc;
+        padding-left: 20px;
+        text-align: left;
+    }
+
+    li {
+        margin: 5px 0;
+    }
+    footer{
+        width: auto;
+        height: 50px;
+    }
+</style>
+
+
+<body>
+    <button id="back-to-main-page">back</button>
+    <div class="container">
+        <img id="img" width="200">
+        <h2 id="name"></h2>
+        <p id="cuisine"></p>
+        <p id="difficulty"></p>
+        <p id="ingredientsList"></p>
+        <p id="instructions"></p>
+    </div>
+    <footer></footer>
+    <script>
+
+        document.getElementById("back-to-main-page").addEventListener("click", function (e) {
+            window.location.href = "index.html";
+        });
+
+        const recipeId = localStorage.getItem("selectedRecipeId");
+
+        if (!recipeId) {
+            document.body.innerHTML = "<p>No recipe ID found.</p>";
+        } else {
+            fetch(`https://dummyjson.com/recipes/${recipeId}`)
+                .then(res => res.json())
+                .then(recipe => {
+                    document.getElementById("img").src = recipe.image;
+                    document.getElementById("name").textContent = recipe.name;
+                    document.getElementById("cuisine").textContent = "Cuisine: " + recipe.cuisine;
+                    document.getElementById("difficulty").textContent = "Difficulty: " + recipe.difficulty;
+
+                    document.getElementById("ingredientsList").innerHTML =
+                        "Ingredients: <ul>" + recipe.ingredients.map(i => `<li>${i}</li>`).join('') + "</ul>";
+
+                    document.getElementById("instructions").textContent = "Instructions: " + recipe.instructions;
+                })
+                .catch(() => {
+                    document.body.innerHTML = "<p>Error loading recipe details.</p>";
+                });
+        }
+    </script>
+</body>
